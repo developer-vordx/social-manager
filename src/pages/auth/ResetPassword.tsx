@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  TextInput,
   PasswordInput,
   Button,
   Title,
@@ -9,15 +8,13 @@ import {
   Stack,
   Alert,
   Loader,
-  Checkbox,
-  Divider,
   Progress,
+  ThemeIcon,
   Paper,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { IconAlertCircle, IconBrandGoogle, IconBrandGithub, IconCheck, IconMail, IconLock, IconUser } from '@tabler/icons-react';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { IconAlertCircle, IconCheck, IconX } from '@tabler/icons-react';
 
 const getPasswordStrength = (password: string) => {
   let strength = 0;
@@ -34,23 +31,22 @@ const getPasswordColor = (strength: number) => {
   return 'green';
 };
 
-export function Signup() {
-  const { signup, loading } = useAuth();
+export function ResetPassword() {
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tokenValid, setTokenValid] = useState<boolean | null>(null);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  
+  const token = searchParams.get('token');
   
   const form = useForm({
     initialValues: {
-      name: '',
-      email: '',
       password: '',
       confirmPassword: '',
-      acceptTerms: false,
-      marketingEmails: false,
     },
     validate: {
-      name: (value) => (value.length < 2 ? 'Name must be at least 2 characters' : null),
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email address'),
       password: (value) => {
         if (value.length < 8) return 'Password must be at least 8 characters';
         if (!/[A-Z]/.test(value)) return 'Password must contain at least one uppercase letter';
@@ -59,25 +55,124 @@ export function Signup() {
       },
       confirmPassword: (value, values) =>
         value !== values.password ? 'Passwords do not match' : null,
-      acceptTerms: (value) => (!value ? 'You must accept the terms and conditions' : null),
     },
   });
+
+  useEffect(() => {
+    // Validate token on component mount
+    const validateToken = async () => {
+      if (!token) {
+        setTokenValid(false);
+        return;
+      }
+
+      try {
+        // Simulate token validation API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // For demo purposes, consider token valid if it's not empty
+        setTokenValid(true);
+      } catch (error) {
+        setTokenValid(false);
+      }
+    };
+
+    validateToken();
+  }, [token]);
 
   const handleSubmit = async (values: typeof form.values) => {
     try {
       setError(null);
-      await signup(values.name, values.email, values.password);
-      navigate('/');
+      setLoading(true);
+      
+      // Simulate API call to reset password
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      setSuccess(true);
+      
+      // Redirect to login after 3 seconds
+      setTimeout(() => {
+        navigate('/auth/login');
+      }, 3000);
     } catch (error) {
-      setError('Failed to create account. Please try again.');
+      setError('Failed to reset password. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSocialSignup = (provider: string) => {
-    // Simulate social signup
-    console.log(`Signing up with ${provider}`);
-    setError('Social signup is not implemented yet. Please use email and password.');
-  };
+  // Loading state while validating token
+  if (tokenValid === null) {
+    return (
+      <Stack gap="lg" align="center">
+        <Loader size="lg" />
+        <Text c="dimmed">Validating reset token...</Text>
+      </Stack>
+    );
+  }
+
+  // Invalid token state
+  if (tokenValid === false) {
+    return (
+      <Stack gap="lg" align="center">
+        <ThemeIcon size={60} variant="light" color="red">
+          <IconX size={30} />
+        </ThemeIcon>
+        
+        <div style={{ textAlign: 'center' }}>
+          <Title order={2} mb="xs">
+            Invalid or expired link
+          </Title>
+          <Text c="dimmed" size="sm" mb="lg">
+            This password reset link is invalid or has expired. Please request a new one.
+          </Text>
+        </div>
+
+        <Button
+          component={Link}
+          to="/auth/forgot-password"
+          variant="light"
+          fullWidth
+        >
+          Request new reset link
+        </Button>
+
+        <Text ta="center" size="sm">
+          <Anchor component={Link} to="/auth/login" fw={500}>
+            Back to login
+          </Anchor>
+        </Text>
+      </Stack>
+    );
+  }
+
+  // Success state
+  if (success) {
+    return (
+      <Stack gap="lg" align="center">
+        <ThemeIcon size={60} variant="light" color="green">
+          <IconCheck size={30} />
+        </ThemeIcon>
+        
+        <div style={{ textAlign: 'center' }}>
+          <Title order={2} mb="xs">
+            Password reset successful
+          </Title>
+          <Text c="dimmed" size="sm" mb="lg">
+            Your password has been successfully reset. You will be redirected to the login page shortly.
+          </Text>
+        </div>
+
+        <Button
+          component={Link}
+          to="/auth/login"
+          fullWidth
+        >
+          Continue to login
+        </Button>
+      </Stack>
+    );
+  }
 
   const passwordStrength = getPasswordStrength(form.values.password);
 
@@ -85,10 +180,10 @@ export function Signup() {
     <Stack gap="lg">
       <div style={{ textAlign: 'center' }}>
         <Title order={2} mb="xs">
-          Create your account
+          Reset your password
         </Title>
         <Text c="dimmed" size="sm">
-          Join thousands of creators using EngagePro
+          Enter your new password below
         </Text>
       </div>
 
@@ -100,28 +195,11 @@ export function Signup() {
 
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="md">
-          <TextInput
-            label="Full name"
-            placeholder="John Doe"
-            size="md"
-            leftSection={<IconUser size={16} />}
-            {...form.getInputProps('name')}
-          />
-          
-          <TextInput
-            label="Email address"
-            placeholder="your@email.com"
-            size="md"
-            leftSection={<IconMail size={16} />}
-            {...form.getInputProps('email')}
-          />
-          
           <div>
             <PasswordInput
-              label="Password"
+              label="New password"
               placeholder="Create a strong password"
               size="md"
-              leftSection={<IconLock size={16} />}
               {...form.getInputProps('password')}
             />
             {form.values.password && (
@@ -140,10 +218,9 @@ export function Signup() {
           </div>
           
           <PasswordInput
-            label="Confirm password"
+            label="Confirm new password"
             placeholder="Confirm your password"
             size="md"
-            leftSection={<IconLock size={16} />}
             {...form.getInputProps('confirmPassword')}
           />
 
@@ -151,41 +228,19 @@ export function Signup() {
             <Text size="xs" fw={500} mb="xs">Password requirements:</Text>
             <Stack gap={2}>
               <Text size="xs" c={form.values.password.length >= 8 ? 'green' : 'dimmed'}>
-                {form.values.password.length >= 8 && <IconCheck size={12} style={{ marginRight: 4 }} />}
-                At least 8 characters
+                • At least 8 characters
               </Text>
               <Text size="xs" c={/[A-Z]/.test(form.values.password) ? 'green' : 'dimmed'}>
-                {/[A-Z]/.test(form.values.password) && <IconCheck size={12} style={{ marginRight: 4 }} />}
-                One uppercase letter
+                • One uppercase letter
               </Text>
               <Text size="xs" c={/[0-9]/.test(form.values.password) ? 'green' : 'dimmed'}>
-                {/[0-9]/.test(form.values.password) && <IconCheck size={12} style={{ marginRight: 4 }} />}
-                One number
+                • One number
               </Text>
               <Text size="xs" c={/[^A-Za-z0-9]/.test(form.values.password) ? 'green' : 'dimmed'}>
-                {/[^A-Za-z0-9]/.test(form.values.password) && <IconCheck size={12} style={{ marginRight: 4 }} />}
-                One special character (recommended)
+                • One special character (recommended)
               </Text>
             </Stack>
           </Paper>
-
-          <Stack gap="xs">
-            <Checkbox
-              label={
-                <Text size="sm">
-                  I agree to the{' '}
-                  <Anchor href="#" size="sm">Terms of Service</Anchor>
-                  {' '}and{' '}
-                  <Anchor href="#" size="sm">Privacy Policy</Anchor>
-                </Text>
-              }
-              {...form.getInputProps('acceptTerms', { type: 'checkbox' })}
-            />
-            <Checkbox
-              label="Send me product updates and marketing emails"
-              {...form.getInputProps('marketingEmails', { type: 'checkbox' })}
-            />
-          </Stack>
 
           <Button 
             type="submit" 
@@ -194,36 +249,13 @@ export function Signup() {
             loading={loading}
             disabled={loading}
           >
-            {loading ? <Loader size="sm" /> : 'Create account'}
+            {loading ? <Loader size="sm" /> : 'Reset password'}
           </Button>
         </Stack>
       </form>
 
-      <Divider label="Or continue with" labelPosition="center" />
-
-      <Stack gap="sm">
-        <Button
-          variant="light"
-          leftSection={<IconBrandGoogle size={16} />}
-          fullWidth
-          size="md"
-          onClick={() => handleSocialSignup('Google')}
-        >
-          Continue with Google
-        </Button>
-        <Button
-          variant="light"
-          leftSection={<IconBrandGithub size={16} />}
-          fullWidth
-          size="md"
-          onClick={() => handleSocialSignup('GitHub')}
-        >
-          Continue with GitHub
-        </Button>
-      </Stack>
-
       <Text ta="center" size="sm">
-        Already have an account?{' '}
+        Remember your password?{' '}
         <Anchor component={Link} to="/auth/login" fw={500}>
           Sign in
         </Anchor>

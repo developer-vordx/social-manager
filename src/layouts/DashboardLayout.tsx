@@ -26,6 +26,7 @@ import {
   IconUser,
   IconBell,
   IconSearch,
+  IconFileText,
 } from '@tabler/icons-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -33,6 +34,7 @@ import { useAuth } from '../hooks/useAuth';
 const navigationItems = [
   { icon: IconDashboard, label: 'Dashboard', path: '/' },
   { icon: IconPencilPlus, label: 'Create Content', path: '/create' },
+  { icon: IconFileText, label: 'Posts', path: '/posts' },
   { icon: IconCalendar, label: 'Content Calendar', path: '/calendar' },
   { icon: IconChartLine, label: 'Analytics', path: '/analytics' },
   { icon: IconUsers, label: 'Team', path: '/team' },
@@ -83,7 +85,7 @@ export function DashboardLayout() {
               <Menu.Target>
                 <UnstyledButton>
                   <Group gap="sm">
-                    <Avatar src={null} radius="xl" size="sm" color="blue">
+                    <Avatar src={user?.avatar} radius="xl" size="sm" color="blue">
                       {user?.name?.charAt(0)}
                     </Avatar>
                     <div style={{ flex: 1 }}>

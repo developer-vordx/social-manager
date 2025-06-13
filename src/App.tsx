@@ -10,8 +10,12 @@ import { ContentCalendar } from './pages/ContentCalendar';
 import { Analytics } from './pages/Analytics';
 import { Settings } from './pages/Settings';
 import { Team } from './pages/Team';
+import { Posts } from './pages/Posts';
 import { Login } from './pages/auth/Login';
 import { Signup } from './pages/auth/Signup';
+import { ForgotPassword } from './pages/auth/ForgotPassword';
+import { ResetPassword } from './pages/auth/ResetPassword';
+import { VerifyEmail } from './pages/auth/VerifyEmail';
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -22,6 +26,9 @@ function App() {
         <Route path="/auth/*" element={<AuthLayout />}>
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="reset-password" element={<ResetPassword />} />
+          <Route path="verify-email" element={<VerifyEmail />} />
         </Route>
         <Route path="*" element={<Navigate to="/auth/login" replace />} />
       </Routes>
@@ -33,6 +40,7 @@ function App() {
       <Route path="/" element={<DashboardLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="create" element={<ContentCreator />} />
+        <Route path="posts" element={<Posts />} />
         <Route path="calendar" element={<ContentCalendar />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="team" element={<Team />} />
