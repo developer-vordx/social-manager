@@ -27,18 +27,22 @@ import {
   IconBell,
   IconSearch,
   IconFileText,
+  IconLink,
+  IconCreditCard,
 } from '@tabler/icons-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const navigationItems = [
-  { icon: IconDashboard, label: 'Dashboard', path: '/' },
-  { icon: IconPencilPlus, label: 'Create Content', path: '/create' },
-  { icon: IconFileText, label: 'Posts', path: '/posts' },
-  { icon: IconCalendar, label: 'Content Calendar', path: '/calendar' },
-  { icon: IconChartLine, label: 'Analytics', path: '/analytics' },
-  { icon: IconUsers, label: 'Team', path: '/team' },
-  { icon: IconSettings, label: 'Settings', path: '/settings' },
+  { icon: IconDashboard, label: 'Dashboard', path: '/dashboard' },
+  { icon: IconPencilPlus, label: 'Create Content', path: '/dashboard/create' },
+  { icon: IconFileText, label: 'Posts', path: '/dashboard/posts' },
+  { icon: IconCalendar, label: 'Content Calendar', path: '/dashboard/calendar' },
+  { icon: IconChartLine, label: 'Analytics', path: '/dashboard/analytics' },
+  { icon: IconLink, label: 'Social Connections', path: '/dashboard/social-connections' },
+  { icon: IconUsers, label: 'Team', path: '/dashboard/team' },
+  { icon: IconCreditCard, label: 'Billing', path: '/dashboard/billing' },
+  { icon: IconSettings, label: 'Settings', path: '/dashboard/settings' },
 ];
 
 export function DashboardLayout() {
@@ -47,6 +51,11 @@ export function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <AppShell
@@ -111,7 +120,7 @@ export function DashboardLayout() {
                 <Menu.Item
                   color="red"
                   leftSection={<IconLogout style={{ width: rem(14), height: rem(14) }} />}
-                  onClick={logout}
+                  onClick={handleLogout}
                 >
                   Logout
                 </Menu.Item>

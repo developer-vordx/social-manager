@@ -67,7 +67,8 @@ export function Signup() {
     try {
       setError(null);
       await signup(values.name, values.email, values.password);
-      navigate('/');
+      // Redirect to dashboard after successful signup
+      navigate('/dashboard');
     } catch (error) {
       setError('Failed to create account. Please try again.');
     }

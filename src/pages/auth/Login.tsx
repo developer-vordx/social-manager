@@ -39,7 +39,8 @@ export function Login() {
     try {
       setError(null);
       await login(values.email, values.password);
-      navigate('/');
+      // Redirect to dashboard after successful login
+      navigate('/dashboard');
     } catch (error) {
       setError('Invalid email or password. Please try again.');
     }
