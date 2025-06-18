@@ -74,6 +74,7 @@ import {
   IconShadow,
   IconBorderRadius,
   IconGradient,
+  IconPlus
 } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { DateTimePicker as MantineDateTimePicker } from '@mantine/dates';
