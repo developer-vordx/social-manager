@@ -981,7 +981,7 @@ export function ContentCreator() {
               <Text c="dimmed">
                 Manage all your scheduled posts
               </Text>
-              <Button size="sm" leftSection={<IconSparkles size={14} />}>
+              <Button size="sm" leftSection={<IconPlus size={14} />}>
                 Add New Post
               </Button>
             </Group>
