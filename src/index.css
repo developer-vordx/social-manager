@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --input-error-size: 14px !important;
+    margin-top: 5px !important;
+}
+.mantine-InputWrapper-error {
+    margin-top: 5px !important;
+}
 .mantine-InputWrapper-label{
     font-weight: 500;
 }
