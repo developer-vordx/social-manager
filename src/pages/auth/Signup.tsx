@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PhoneInput from "react-phone-input-2";
 import {
   TextInput,
   PasswordInput,
@@ -117,15 +118,22 @@ export function Signup() {
             leftSection={<IconMail size={16} />}
             {...form.getInputProps('email')}
           />
-          
-          <TextInput
-            label="Phone number"
-            placeholder="000000"
-            size="md"
-            leftSection={<IconMail size={16} />}
-            {...form.getInputProps('phone')}
-          />
           <div>
+          <div className="mantine-input-wrapper mb-4">
+            <label className="mantine-InputWrapper-label fw-500">Phone number</label>
+            <PhoneInput
+              country={'pk'}
+              value={form.values.phone}
+              onChange={(value) => form.setFieldValue('phone', value)}
+              inputProps={{
+                name: 'phone',
+                required: true,
+              }}
+              containerClass="mantine-phone-container"
+              inputClass="mantine-phone-input"
+              buttonClass="mantine-phone-button"
+            />
+          </div>
             <PasswordInput
               label="Password"
               placeholder="Create a strong password"
