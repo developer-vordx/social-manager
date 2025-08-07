@@ -1,6 +1,4 @@
-import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AppShell } from '@mantine/core';
 import { useAuth } from './hooks/useAuth';
 import { NotificationProvider } from './hooks/useNotifications';
 import { DashboardLayout } from './layouts/DashboardLayout';
@@ -24,8 +22,10 @@ import { ResetPassword } from './pages/auth/ResetPassword';
 import { VerifyEmail } from './pages/auth/VerifyEmail';
 
 function App() {
-  const { isAuthenticated } = useAuth();
-
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <NotificationProvider>
       <Routes>
