@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import PhoneInput from "react-phone-input-2";
 import {
   TextInput,
+  Input,
   PasswordInput,
   Button,
   Title,
@@ -52,6 +54,15 @@ export function Signup() {
     validate: {
       name: (value) => (value.length < 2 ? 'Name must be at least 2 characters' : null),
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email address'),
+      phone: (value) => {
+        if (!value || value.trim() === '') {
+          return 'Phone number is required';
+        }
+        if (!/^\d{10,15}$/.test(value.replace(/\D/g, ''))) {
+          return 'Enter a valid phone number';
+        }
+        return null;
+      },
       password: (value) => {
         if (value.length < 8) return 'Password must be at least 8 characters';
         if (!/[A-Z]/.test(value)) return 'Password must contain at least one uppercase letter';
@@ -117,15 +128,24 @@ export function Signup() {
             leftSection={<IconMail size={16} />}
             {...form.getInputProps('email')}
           />
-          
-          <TextInput
-            label="Phone number"
-            placeholder="000000"
-            size="md"
-            leftSection={<IconMail size={16} />}
-            {...form.getInputProps('phone')}
-          />
           <div>
+          <div className="mantine-input-wrapper mb-4">
+            <label className="mantine-InputWrapper-label">Phone number</label>
+            <Input.Wrapper
+              required
+              error={form.errors.phone}
+            >
+              <PhoneInput
+                country={'pk'}
+                value={form.values.phone}
+                onChange={(value) => form.setFieldValue('phone', value)}
+                onBlur={() => form.validateField('phone')}
+                containerClass="mantine-phone-container"
+                inputClass="mantine-phone-input"
+                buttonClass="mantine-phone-button"
+              />
+            </Input.Wrapper>
+          </div>
             <PasswordInput
               label="Password"
               placeholder="Create a strong password"

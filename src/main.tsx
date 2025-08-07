@@ -8,6 +8,7 @@ import App from './App';
 import { theme } from './theme';
 import { AuthProvider } from './context/AuthProvider'; // ✅ Add this import
 
+import 'react-phone-input-2/lib/style.css';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
