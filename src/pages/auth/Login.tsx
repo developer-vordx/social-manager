@@ -42,7 +42,7 @@ export function Login() {
       // Redirect to dashboard after successful login
       navigate('/dashboard');
     } catch (error) {
-      setError('Invalid email or password. Please try again.');
+      setError(error.response.data.errors);
     }
   };
 

@@ -44,6 +44,7 @@ export function Signup() {
       name: '',
       email: '',
       password: '',
+      phone: '',
       confirmPassword: '',
       acceptTerms: false,
       marketingEmails: false,
@@ -59,18 +60,18 @@ export function Signup() {
       },
       confirmPassword: (value, values) =>
         value !== values.password ? 'Passwords do not match' : null,
-      acceptTerms: (value) => (!value ? 'You must accept the terms and conditions' : null),
+      // acceptTerms: (value) => (!value ? 'You must accept the terms and conditions' : null),
     },
   });
 
   const handleSubmit = async (values: typeof form.values) => {
     try {
       setError(null);
-      await signup(values.name, values.email, values.password);
+      await signup(values.name, values.email, values.phone, values.password, values.confirmPassword);
       // Redirect to dashboard after successful signup
       navigate('/dashboard');
     } catch (error) {
-      setError('Failed to create account. Please try again.');
+      setError(error.response.data.errors);
     }
   };
 
@@ -117,6 +118,13 @@ export function Signup() {
             {...form.getInputProps('email')}
           />
           
+          <TextInput
+            label="Phone number"
+            placeholder="000000"
+            size="md"
+            leftSection={<IconMail size={16} />}
+            {...form.getInputProps('phone')}
+          />
           <div>
             <PasswordInput
               label="Password"
@@ -170,7 +178,7 @@ export function Signup() {
             </Stack>
           </Paper>
 
-          <Stack gap="xs">
+          {/* <Stack gap="xs">
             <Checkbox
               label={
                 <Text size="sm">
@@ -186,7 +194,7 @@ export function Signup() {
               label="Send me product updates and marketing emails"
               {...form.getInputProps('marketingEmails', { type: 'checkbox' })}
             />
-          </Stack>
+          </Stack> */}
 
           <Button 
             type="submit" 

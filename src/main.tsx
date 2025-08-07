@@ -6,6 +6,7 @@ import { Notifications } from '@mantine/notifications';
 import { ModalsProvider } from '@mantine/modals';
 import App from './App';
 import { theme } from './theme';
+import { AuthProvider } from './context/AuthProvider'; // ✅ Add this import
 
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
@@ -20,7 +21,9 @@ createRoot(document.getElementById('root')!).render(
       <MantineProvider theme={theme}>
         <ModalsProvider>
           <Notifications />
-          <App />
+            <AuthProvider>
+              <App />
+            </AuthProvider>
         </ModalsProvider>
       </MantineProvider>
     </BrowserRouter>
